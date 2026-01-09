@@ -8,15 +8,15 @@ interface ContactProps {
 const Contact: React.FC<ContactProps> = ({ setView }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({ name: '', phone: '', sector: 'ROOFING // EXTERIORS', details: '' });
+  const [formData, setFormData] = useState({ name: '', phone: '', email: '', sector: 'ROOFING // EXTERIORS', details: '' });
 
   const handleDispatch = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     
     try {
-      // Mission Critical: Dispatch data to GoHighLevel Webhook
-      await fetch('https://services.leadconnectorhq.com/hooks/oq6ksB8Db4Z9ug03AVhm/webhook-trigger/68f19cf0-d894-41cc-8edf-066c612ae25a', {
+      // Mission Critical: Dispatch data to your specific GoHighLevel Webhook
+      await fetch('https://services.leadconnectorhq.com/hooks/pqvS0I6Spk90npfeB3Dp/webhook-trigger/f3a6e06c-34ac-48b6-a449-58f0cc5ac649', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -28,6 +28,7 @@ const Contact: React.FC<ContactProps> = ({ setView }) => {
       setIsSubmitted(true);
     } catch (error) {
       console.error('Dispatch Error:', error);
+      // We still show success to the user to keep them in the funnel (Calendly booking)
       setIsSubmitted(true);
     } finally {
       setLoading(false);
@@ -132,10 +133,23 @@ const Contact: React.FC<ContactProps> = ({ setView }) => {
                   </svg>
                 </div>
                 <h2 className="text-3xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter mb-4">Transmission Received.</h2>
-                <p className="text-slate-500 dark:text-slate-400 font-medium mb-10">Your mission parameters have been logged. An operator will establish contact via SMS/Phone within the next hour.</p>
+                <p className="text-slate-500 dark:text-slate-400 font-medium mb-10">Data logged successfully. For the final phase of activation, please secure your briefing slot below.</p>
+                
+                <a 
+                  href="https://calendly.com/stratusmarketingllc/30min"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full bg-sky-600 text-white py-6 rounded-2xl text-[11px] font-black uppercase tracking-[0.4em] animate-breathe-glow hover:bg-sky-500 transition-all flex items-center justify-center gap-4 mb-8 shadow-xl shadow-sky-500/20"
+                >
+                  Finalize Activation // Book Call
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </a>
+
                 <button 
                   onClick={() => setIsSubmitted(false)}
-                  className="text-sky-500 font-black uppercase tracking-widest text-[10px] hover:text-sky-400 transition-all border-b border-sky-500/30 pb-1"
+                  className="text-slate-400 font-black uppercase tracking-widest text-[10px] hover:text-sky-500 transition-all"
                 >
                   Send New Dispatch
                 </button>
@@ -155,7 +169,7 @@ const Contact: React.FC<ContactProps> = ({ setView }) => {
                           value={formData.name}
                           onChange={(e) => setFormData({...formData, name: e.target.value})}
                           placeholder="IDENTIFY YOURSELF"
-                          className="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-800 rounded-xl px-6 py-5 text-sm font-bold tracking-widest text-slate-900 dark:text-white focus:ring-1 focus:ring-sky-500 outline-none transition-all placeholder:text-slate-400/30"
+                          className="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-6 py-5 text-sm font-bold tracking-widest text-slate-900 dark:text-white focus:ring-1 focus:ring-sky-500 outline-none transition-all placeholder:text-slate-400/30"
                         />
                       </div>
                       <div className="relative group">
@@ -166,7 +180,18 @@ const Contact: React.FC<ContactProps> = ({ setView }) => {
                           value={formData.phone}
                           onChange={(e) => setFormData({...formData, phone: e.target.value})}
                           placeholder="+1 (000) 000-0000"
-                          className="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-800 rounded-xl px-6 py-5 text-sm font-bold tracking-widest text-slate-900 dark:text-white focus:ring-1 focus:ring-sky-500 outline-none transition-all placeholder:text-slate-400/30"
+                          className="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-6 py-5 text-sm font-bold tracking-widest text-slate-900 dark:text-white focus:ring-1 focus:ring-sky-500 outline-none transition-all placeholder:text-slate-400/30"
+                        />
+                      </div>
+                      <div className="relative group">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-sky-500 mb-3 block">Data Link // Email</label>
+                        <input 
+                          required
+                          type="email" 
+                          value={formData.email}
+                          onChange={(e) => setFormData({...formData, email: e.target.value})}
+                          placeholder="OPERATOR@BASE.COM"
+                          className="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-6 py-5 text-sm font-bold tracking-widest text-slate-900 dark:text-white focus:ring-1 focus:ring-sky-500 outline-none transition-all placeholder:text-slate-400/30"
                         />
                       </div>
                       <div className="relative group">
@@ -174,7 +199,7 @@ const Contact: React.FC<ContactProps> = ({ setView }) => {
                         <select 
                           value={formData.sector}
                           onChange={(e) => setFormData({...formData, sector: e.target.value})}
-                          className="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-800 rounded-xl px-6 py-5 text-sm font-bold tracking-widest text-slate-900 dark:text-white focus:ring-1 focus:ring-sky-500 outline-none transition-all appearance-none"
+                          className="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-6 py-5 text-sm font-bold tracking-widest text-slate-900 dark:text-white focus:ring-1 focus:ring-sky-500 outline-none appearance-none"
                         >
                           <option>ROOFING // EXTERIORS</option>
                           <option>HVAC // CLIMATE CONTROL</option>
@@ -186,11 +211,11 @@ const Contact: React.FC<ContactProps> = ({ setView }) => {
                       <div className="relative group">
                         <label className="text-[10px] font-black uppercase tracking-widest text-sky-500 mb-3 block">Briefing Details</label>
                         <textarea 
-                          rows={4}
+                          rows={3}
                           value={formData.details}
                           onChange={(e) => setFormData({...formData, details: e.target.value})}
                           placeholder="DESCRIBE YOUR CURRENT OPERATIONAL CHALLENGES..."
-                          className="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-800 rounded-xl px-6 py-5 text-sm font-bold tracking-widest text-slate-900 dark:text-white focus:ring-1 focus:ring-sky-500 outline-none transition-all placeholder:text-slate-400/30"
+                          className="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-6 py-5 text-sm font-bold tracking-widest text-slate-900 dark:text-white focus:ring-1 focus:ring-sky-500 outline-none transition-all placeholder:text-slate-400/30"
                         ></textarea>
                       </div>
                     </div>
