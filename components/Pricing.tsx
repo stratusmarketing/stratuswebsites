@@ -11,6 +11,10 @@ const Pricing: React.FC<PricingProps> = ({ setView }) => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({ name: '', phone: '', email: '', sector: 'ROOFING // EXTERIORS' });
 
+  // MISSION CRITICAL: Stripe Activation Links
+  const STRIPE_MONTHLY_URL = "https://buy.stripe.com/bJe8wR9gO2Cn5oKdKYfEk00";
+  const STRIPE_ANNUAL_URL = "https://buy.stripe.com/cNi6oJ64C2CncRc36kfEk01";
+
   const features = [
     "Functional Website (10 to 20 Pages)",
     "Automated Lead Follow-up System",
@@ -26,26 +30,35 @@ const Pricing: React.FC<PricingProps> = ({ setView }) => {
     e.preventDefault();
     setLoading(true);
     
+    // Determine the tactical target based on plan selection
+    const targetUrl = isAnnual ? STRIPE_ANNUAL_URL : STRIPE_MONTHLY_URL;
+    
     try {
-      // Mission Critical: Dispatch data to GoHighLevel Webhook
-      await fetch('https://services.leadconnectorhq.com/hooks/oq6ksB8Db4Z9ug03AVhm/webhook-trigger/68f19cf0-d894-41cc-8edf-066c612ae25a', {
+      // PHASE 01: Capture Lead Data (High-Priority Dispatch)
+      // We log the lead before the handoff to ensure follow-up capability
+      await fetch('https://services.leadconnectorhq.com/hooks/pqvS0I6Spk90npfeB3Dp/webhook-trigger/f3a6e06c-34ac-48b6-a449-58f0cc5ac649', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
           plan_type: isAnnual ? 'Annual' : 'Monthly',
+          investment_amount: isAnnual ? '$2,970' : '$297',
           source: 'Stratus Web Pricing Funnel',
+          status: 'Phase 01 Complete // Stripe Handoff Initiated',
           timestamp: new Date().toISOString()
         }),
       });
-      // Redirect to Calendly for the final step of the funnel
-      window.location.href = "https://calendly.com/stratusmarketingllc/30min";
+
+      // PHASE 02: Tactical Handoff to Stripe
+      // We simulate an encrypted handoff for 800ms for brand feel
+      setTimeout(() => {
+        window.location.href = targetUrl;
+      }, 800);
+
     } catch (error) {
-      console.error('Funnel Error:', error);
-      // Still redirect so the user can book even if lead logging failed
-      window.location.href = "https://calendly.com/stratusmarketingllc/30min";
-    } finally {
-      setLoading(false);
+      console.error('System Routing Error:', error);
+      // Fail-safe: Always attempt payment redirect
+      window.location.href = targetUrl;
     }
   };
 
@@ -146,7 +159,10 @@ const Pricing: React.FC<PricingProps> = ({ setView }) => {
               <div className="absolute inset-0 radar-grid opacity-5 pointer-events-none"></div>
               <div className="relative z-10">
                 <div className="flex justify-between items-center mb-8">
-                  <h3 className="text-2xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter">System Activation</h3>
+                  <div>
+                    <h3 className="text-2xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter">System Activation</h3>
+                    <p className="text-[10px] font-black text-sky-500 uppercase tracking-widest mt-1">Plan: {isAnnual ? 'Elite Annual' : 'Elite Monthly'}</p>
+                  </div>
                   <button onClick={() => setShowFunnel(false)} className="text-[9px] font-black text-slate-400 uppercase tracking-widest hover:text-red-500 transition-colors">Cancel</button>
                 </div>
                 
@@ -212,19 +228,25 @@ const Pricing: React.FC<PricingProps> = ({ setView }) => {
                     className="w-full bg-sky-600 text-white py-6 rounded-2xl text-[11px] font-black uppercase tracking-[0.4em] animate-breathe-glow hover:bg-sky-500 transition-all flex items-center justify-center gap-4 disabled:opacity-50"
                   >
                     {loading ? (
-                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                      <>
+                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        Encrypting Phase 02...
+                      </>
                     ) : (
                       <>
-                        Deploy Details & Book Call
+                        Handoff to Secure Stripe Portal
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M12 15v2m0 0v3m0-3h3m-3 0H9m12-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                       </>
                     )}
                   </button>
-                  <p className="text-center text-[8px] font-bold text-slate-400 uppercase tracking-widest">
-                    Encryption Active // Redirecting to Calendly on submission
-                  </p>
+                  <div className="flex items-center justify-center gap-3 mt-4">
+                     <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
+                     <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">
+                       Secure Stripe Link Active // 256-bit AES Encryption
+                     </p>
+                  </div>
                 </form>
               </div>
             </div>

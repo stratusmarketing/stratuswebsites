@@ -32,7 +32,7 @@ const Navbar: React.FC<NavbarProps> = ({ setView, currentView }) => {
           onClick={() => setView('engine')} 
           className={`nav-link transition-all ${currentView === 'engine' ? 'text-sky-500' : 'hover:text-sky-500'}`}
         >
-          The Engine
+          The System
         </button>
         <button 
           onClick={() => setView('pricing')} 
